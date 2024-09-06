@@ -1,17 +1,37 @@
 [tool.poetry]
-name = "ml_workflows"
+name = "ml-workflows"
 version = "0.1.0"
-description = "Implementing Machine Learning Workflows Orchestration using Kubeflow Pipelines and Vertex AI."
+description = "An example implementation of model training workflow, using KubeFlow Pipelines and GCP."
 authors = ["Martynas Subonis <martynas.subonis@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
+packages = [
+    { include = "data_prep", to = "ml-workflows" },
+    { include = "train", to = "ml-workflows" },
+    { include = "eval", to = "ml-workflows" }
+]
 
 [tool.poetry.dependencies]
-python = "~3.12.5"
+python = "~3.12"
 kfp = "2.8.0"
-google-cloud-aiplatform = "1.61.0"
+pydantic = "2.8.2"
+python-dotenv = "1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "1.11.2"
+ruff = "0.6.3"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+explicit_package_bases = true
+
+[tool.ruff]
+line-length = 140
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pipeline = "pipeline:compile_upload"
