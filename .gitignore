@@ -1,3 +1,19 @@
+# project specific
+pipeline.yaml
+torch_model
+onnx_model.onnx
+loss_plot.png
+local.py
+train_images
+val_images
+test_images
+train_split.json
+val_split.json
+test_split.json
+f1_score_by_class.png
+precision_by_class.png
+recall_by_class.png
+
 # pyenv
 .python-version
 
