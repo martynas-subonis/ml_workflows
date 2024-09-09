@@ -87,7 +87,8 @@ def compile_upload() -> None:
         file_name=PIPELINE_PATH, tags=[version("ml-workflows"), "latest"]
     )
     logger.info(
-        f"Successfully created and uploaded template: {template_name}, version-{version_name}. Time taken: {round(time.time() - start_time, 2)} seconds."
+        f"Successfully created and uploaded template: "
+        f"{template_name}, version-{version_name}. Time taken: {round(time.time() - start_time, 2)} seconds."
     )
 
 
