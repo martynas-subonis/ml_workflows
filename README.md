@@ -15,6 +15,9 @@ availability in my existing setup or compatability with existing setup.
 The `ml-workflows` follows a `standard` project structure, as well as tooling, proposed in the
 repository [py-manage](https://github.com/martynas-subonis/py-manage).
 
+Extensive write-up and discussion about approaches taken here can me found in
+article ["Reasoning About ML Workflows"](https://martynassubonis.substack.com/p/reasoning-about-ml-workflows).
+
 ## Table of Contents
 
 - [Hypothetical Problem Statement](#hypothetical-problem-statement)
@@ -34,16 +37,14 @@ images captured by on-site cameras, we can predict energy output more accurately
 This weather recognition capability would enable more efficient resource allocation and improve overall energy
 production forecasting.
 
-For this problem, we've acquired a
-[“Weather Image Recognition”](https://www.kaggle.com/datasets/jehanbhathena/weather-dataset) dataset that we believe
-will meet our needs. Our goal is to create a model capable of predicting 11 distinct weather conditions: dew, fog/smog,
-frost, glaze, hail, lightning, rain, rainbow, rime, sandstorm, and snow. This diverse range of weather phenomena will
-allow our AI system to provide comprehensive insights for optimizing our renewable energy operations.
+For this problem, we've acquired a [“Weather Image Recognition”](https://www.kaggle.com/datasets/jehanbhathena/weather-dataset) dataset as
+an initial dataset that we believe will meet our needs. Our goal is to create a model capable of predicting 11 distinct weather conditions:
+dew, fog/smog, frost, glaze, hail, lightning, rain, rainbow, rime, sandstorm, and snow. This diverse range of weather phenomena will allow
+our AI system to provide comprehensive insights for optimizing our renewable energy operations.
 
-The aim of our project is to develop a robust model training pipeline that researchers and engineers can easily
-reuse with different runtime parameters. This template should accommodate varying data sources, data splits, random
-seeds, training epochs etc. The pipeline should guarantee reproducibility and ease of artifact tracking, as well
-as a high level of automation.
+The aim of our project is to develop a robust model training pipeline that researchers and engineers can easily reuse with different runtime
+parameters. It should accommodate varying data sources (if somebody decides to enhance the initial dataset), data splits, random seeds,
+training epochs, etc. The pipeline should guarantee reproducibility and ease of artifact tracking, as well as a high level of automation.
 
 ## Pipeline Overview
 
