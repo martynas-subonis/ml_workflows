@@ -42,8 +42,8 @@ allow our AI system to provide comprehensive insights for optimizing our renewab
 
 The aim of our project is to develop a robust model training pipeline that researchers and engineers can easily
 reuse with different runtime parameters. This template should accommodate varying data sources, data splits, random
-seeds, training etc. The pipeline should guarantee reproducibility and ease of artifact tracking, as well
-as high level of automation.
+seeds, training epochs etc. The pipeline should guarantee reproducibility and ease of artifact tracking, as well
+as a high level of automation.
 
 ## Pipeline Overview
 
@@ -85,9 +85,9 @@ of [Poetry](https://python-poetry.org/docs/) and its `.lock` files. To guarantee
 employ fixed random seeds for randomized algorithms. Additionally, the training component includes
 extra [PyTorch reproducibility](https://pytorch.org/docs/2.3/notes/randomness.html#reproducibility) measures.
 
-By default, component result caching is enabled, meaning components are not re-executed unless their input parameters or
-the components themselves are modified. This allows for rapid iteration and adjustment of evaluation code without the
-need for time-consuming retraining.
+By default, component result caching is enabled, meaning components are not re-executed unless their input parameters or the components
+themselves are modified. For example, this would allow for adjustments to the evaluation code without the need for time-consuming
+retraining.
 
 ## Artifact Examples
 
@@ -105,8 +105,8 @@ If we add pipeline runs of interest
 to [Vertex AI Experiment](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments), we can get
 side-by-side comparisons for free:
 
-![Comparison Parameters](readme_assets/comparison_parameters.png)
-![Comparison Scores](readme_assets/comparison_scores.png)
+![Comparison Parameters](readme_assets/comparison_params.png)
+![Comparison Scores](readme_assets/comparison_metrics.png)
 
 ## Prerequisites
 

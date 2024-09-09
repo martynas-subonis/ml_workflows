@@ -136,7 +136,11 @@ def train_model(
         train_metrics.log_metric("trainLoss", train_losses[-1])
         train_metrics.log_metric("valLoss", val_losses[-1])
 
-    setup_info = f"torch-{torch.__version__}, torchvision-{torchvision.__version__}, numpy-{np.__version__}, model={mobilenet_v3_small.__name__}, weights={MobileNet_V3_Small_Weights.__name__}, {random_seed=}, {epochs=}"
+    setup_info = (
+        f"torch-{torch.__version__}, torchvision-{torchvision.__version__}, "
+        f"numpy-{np.__version__}, model={mobilenet_v3_small.__name__}, "
+        f"weights={MobileNet_V3_Small_Weights.__name__}, {random_seed=}, {epochs=}"
+    )
     torch.save(model.state_dict(), torch_model.path)
     torch_model.framework = setup_info
     model_input = torch.randn(1, 3, transform.crop_size[0], transform.crop_size[0]).to(device)
