@@ -13,6 +13,7 @@ from pydantic.dataclasses import dataclass
 
 from data_prep.component_func import prep_data
 from eval.component_func import eval_model
+from onnx_optimize.component_func import onnx_optimize
 from train.component_func import train_model
 
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +32,7 @@ class Environment:
     prep_data_docker_uri: str
     train_model_docker_uri: str
     eval_model_docker_uri: str
+    onnx_optimize_docker_uri: str
 
 
 def compile_upload() -> None:
@@ -44,6 +46,7 @@ def compile_upload() -> None:
         prep_data_docker_uri=environ["PREP_DATA_DOCKER_URI"],
         train_model_docker_uri=environ["TRAIN_MODEL_DOCKER_URI"],
         eval_model_docker_uri=environ["EVAL_MODEL_DOCKER_URI"],
+        onnx_optimize_docker_uri=environ["ONNX_OPTIMIZE_DOCKER_URI"],
     )
 
     @pipeline(  # type: ignore[misc]
@@ -79,6 +82,10 @@ def compile_upload() -> None:
             data_bucket=data_bucket,
             test_split_info=prep_data_task.outputs["test_split_info"],
             torch_model=train_model_task.outputs["torch_model"],
+        )
+
+        create_component_from_func(func=onnx_optimize, base_image=env.onnx_optimize_docker_uri, install_kfp_package=False)(
+            onnx_with_transform_model=train_model_task.outputs["onnx_with_transform_model"]
         )
 
     logger.info("Compiling weather model pipeline...")

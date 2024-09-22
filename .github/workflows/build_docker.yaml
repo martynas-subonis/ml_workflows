@@ -16,7 +16,8 @@ jobs:
         directory: [
           data_prep,
           train,
-          eval
+          eval,
+          onnx_optimize
         ]
 
     steps:

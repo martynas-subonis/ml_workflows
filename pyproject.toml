@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ml-workflows"
-version = "0.1.0"
+version = "0.2.0"
 description = "An example implementation of model training workflow, using KubeFlow Pipelines and GCP."
 authors = ["Martynas Subonis <martynas.subonis@gmail.com>"]
 license = "MIT"
@@ -8,7 +8,8 @@ readme = "README.md"
 packages = [
     { include = "data_prep", to = "ml-workflows" },
     { include = "train", to = "ml-workflows" },
-    { include = "eval", to = "ml-workflows" }
+    { include = "eval", to = "ml-workflows" },
+    { include = "onnx_optimize", to = "ml-workflows" }
 ]
 
 [tool.poetry.dependencies]
