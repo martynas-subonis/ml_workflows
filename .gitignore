@@ -4,6 +4,9 @@ torch_model
 onnx_model.onnx
 loss_plot.png
 local.py
+local.pth
+local.onnx
+local_2.onnx
 train_images
 val_images
 test_images
@@ -13,6 +16,11 @@ test_split.json
 f1_score_by_class.png
 precision_by_class.png
 recall_by_class.png
+train/comparison_image_*.png
+train/small_original.png
+train/small_transformed_custom.png
+train/small_transformed_weights.png
+optimized_model.onnx
 
 # pyenv
 .python-version

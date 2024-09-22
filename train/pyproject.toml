@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "train"
-version = "0.1.0"
+version = "0.2.0"
 description = "Weather Model Training Kubeflow Component"
 authors = ["Martynas Subonis <martynas.subonis@gmail.com>"]
 license = "MIT"
@@ -22,6 +22,7 @@ torchvision = [
     { url = "https://download.pytorch.org/whl/cpu/torchvision-0.18.1%2Bcpu-cp312-cp312-linux_x86_64.whl", platform = "linux" },
     { url = "https://download.pytorch.org/whl/cpu/torchvision-0.18.1-cp312-cp312-macosx_11_0_arm64.whl", platform = "darwin" },
 ]
+pillow = "10.4.0"
 
 [build-system]
 requires = ["poetry-core"]

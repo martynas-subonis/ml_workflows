@@ -7,11 +7,6 @@ and [weather image classification dataset](https://www.kaggle.com/datasets/jehan
 study, the focus is on demonstrating key concepts like reproducibility, artifact tracking, and automation, rather than
 the specifics of tools and implementation details.
 
-Disclaimer — this project doesn't advocate for Kubeflow Pipelines as the definitive framework for developing machine
-learning workflows (alternative frameworks will be provided in the appendix), nor does it endorse Vertex AI as the
-optimal managed platform. The choice of these specific tools stems from pragmatic reasons — namely, their immediate
-availability in my existing setup or compatability with existing setup.
-
 The `ml-workflows` follows a `standard` project structure, as well as tooling, proposed in the
 repository [py-manage](https://github.com/martynas-subonis/py-manage).
 
@@ -50,7 +45,7 @@ training epochs, etc. The pipeline should guarantee reproducibility and ease of 
 
 ![Pipeline Overview](readme_assets/overview.png)
 
-The [pipeline](template.py) consists of three main components:
+The [pipeline](template.py) consists of four main components:
 
 1. Data Preparation ([data_prep](data_prep)):
 
@@ -70,7 +65,8 @@ The [pipeline](template.py) consists of three main components:
 -
     - Fine-tunes the classifier head for the specific problem domain.
 -
-    - Outputs: trained PyTorch model, ONNX model, training metrics, and loss plot.
+    - Outputs: trained PyTorch model, ONNX model, ONNX model with transformations included as part of model graph, training metrics, and
+      loss plot.
 
 3. Model Evaluation ([eval](eval)):
 
@@ -80,6 +76,11 @@ The [pipeline](template.py) consists of three main components:
     - Calculates evaluation metrics.
 -
     - Outputs: confusion matrix, weighted precision, recall, and F1-scores.
+
+4. ONNX Model Optimization ([onnx_optimize](onnx_optimize)):
+
+-
+    - A simple component which loads ONNX model with transformations, optimizes it, and produces optimized model artifact.
 
 Each component has its own Docker image, ensuring a reproducible runtime environment through the use
 of [Poetry](https://python-poetry.org/docs/) and its `.lock` files. To guarantee consistency in results, all components
@@ -139,6 +140,7 @@ STAGING_BUCKET=  # Your GCS bucket, where Kubeflow Pipelines will persist its ar
 PREP_DATA_DOCKER_URI=  # Your URI of data_prep component Docker image. 
 TRAIN_MODEL_DOCKER_URI=  # Your URI of train component Docker image.
 EVAL_MODEL_DOCKER_URI=  # Your URI of eval component Docker image.
+ONNX_OPTIMIZE_DOCKER_URI = # Your URI of onnx_optimize component Docker image.
 ```
 
 - Have [Poetry installed](https://python-poetry.org/docs/#installation).

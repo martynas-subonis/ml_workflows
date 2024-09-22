@@ -11,6 +11,7 @@ def train_model(
     loss_plot: Output[Artifact],
     torch_model: Output[Model],
     onnx_model: Output[Model],
+    onnx_with_transform_model: Output[Model],
 ) -> None:
     import logging
     import os
@@ -23,14 +24,18 @@ def train_model(
     import numpy as np
     import onnx
     import torch
+    import torch.nn.functional as F
     import torchvision
     from google.cloud.storage import Client, transfer_manager
+    from torch.nn import Module
     from torch.utils.data import DataLoader
     from torchvision.datasets import ImageFolder
     from torchvision.models import (
         MobileNet_V3_Small_Weights,
+        MobileNetV3,
         mobilenet_v3_small,
     )
+    from torchvision.transforms.functional import pad
 
     logging.info("Started train model task.")
     # Reproducibility:
@@ -147,6 +152,40 @@ def train_model(
     opset_version = 17
     torch.onnx.export(model, model_input, f"{onnx_model.path}.onnx", opset_version=opset_version)
     onnx_model.framework = f"{setup_info}, onnx-{onnx.__version__}, {opset_version=}"
+
+    class ModelWithTransforms(Module):  # type: ignore[misc]
+        def __init__(self, model: MobileNetV3) -> None:
+            super(ModelWithTransforms, self).__init__()
+            self.model = model
+            self.register_buffer("mean", torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1))
+            self.register_buffer("std", torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1))
+            self.register_buffer("targ_h", torch.tensor(224))
+            self.register_buffer("targ_w", torch.tensor(224))
+
+        def transform(self, img: torch.Tensor) -> torch.Tensor:
+            # Add batch dimension if needed.
+            if img.dim() == 3:
+                img = img.unsqueeze(0)
+            resized = F.interpolate(img, size=256, mode="bilinear", align_corners=False)
+            _, _, curr_h, curr_w = resized.shape
+            pad_h = torch.clamp(self.targ_h - curr_h, min=0)
+            pad_w = torch.clamp(self.targ_w - curr_w, min=0)
+            padding = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
+            padded = pad(resized, padding)
+            start_h = torch.clamp((curr_h + pad_h - self.targ_h) // 2, min=0)
+            start_w = torch.clamp((curr_w + pad_w - self.targ_w) // 2, min=0)
+            cropped = padded[..., start_h : start_h + self.targ_h, start_w : start_w + self.targ_w]
+            normalized = (cropped - self.mean.to(cropped.device)) / self.std.to(cropped.device)
+            return normalized
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            x = self.transform(x)
+            return self.model(x)
+
+    model_with_transform = ModelWithTransforms(model)
+    model_with_transform.to(device)
+    torch.onnx.export(model_with_transform, model_input, f"{onnx_with_transform_model.path}.onnx", opset_version=opset_version)
+    onnx_with_transform_model.framework = f"{setup_info}, onnx-{onnx.__version__}, {opset_version=}"
 
     train_metrics.log_metric("timeTakenSeconds", round(time.time() - start_time, 2))
     logging.info("Successfully finished weather model training.")
