@@ -11,7 +11,7 @@ The `ml-workflows` follows a `standard` project structure, as well as tooling, p
 repository [py-manage](https://github.com/martynas-subonis/py-manage).
 
 Extensive write-up and discussion about approaches taken here can me found in
-article ["Reasoning About ML Workflows"](https://martynassubonis.substack.com/p/reasoning-about-ml-workflows).
+article ["ML Training Pipelines"](https://martynassubonis.substack.com/p/reasoning-about-ml-workflows).
 
 ## Table of Contents
 
