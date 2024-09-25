@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ml-workflows"
-version = "0.2.0"
+version = "0.3.0"
 description = "An example implementation of model training workflow, using KubeFlow Pipelines and GCP."
 authors = ["Martynas Subonis <martynas.subonis@gmail.com>"]
 license = "MIT"

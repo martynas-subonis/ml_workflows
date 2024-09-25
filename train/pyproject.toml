@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "train"
-version = "0.2.0"
+version = "0.3.0"
 description = "Weather Model Training Kubeflow Component"
 authors = ["Martynas Subonis <martynas.subonis@gmail.com>"]
 license = "MIT"

@@ -163,19 +163,16 @@ def train_model(
             self.register_buffer("targ_w", torch.tensor(224))
 
         def transform(self, img: torch.Tensor) -> torch.Tensor:
-            # Add batch dimension if needed.
-            if img.dim() == 3:
-                img = img.unsqueeze(0)
             resized = F.interpolate(img, size=256, mode="bilinear", align_corners=False)
             _, _, curr_h, curr_w = resized.shape
             pad_h = torch.clamp(self.targ_h - curr_h, min=0)
             pad_w = torch.clamp(self.targ_w - curr_w, min=0)
             padding = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
-            padded = pad(resized, padding)
+            padded = pad(resized, padding).to(device)
             start_h = torch.clamp((curr_h + pad_h - self.targ_h) // 2, min=0)
             start_w = torch.clamp((curr_w + pad_w - self.targ_w) // 2, min=0)
             cropped = padded[..., start_h : start_h + self.targ_h, start_w : start_w + self.targ_w]
-            normalized = (cropped - self.mean.to(cropped.device)) / self.std.to(cropped.device)
+            normalized = (cropped - self.mean.to(device)) / self.std.to(device)
             return normalized
 
         def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -184,7 +181,18 @@ def train_model(
 
     model_with_transform = ModelWithTransforms(model)
     model_with_transform.to(device)
-    torch.onnx.export(model_with_transform, model_input, f"{onnx_with_transform_model.path}.onnx", opset_version=opset_version)
+    torch.onnx.export(
+        model_with_transform,
+        model_input,
+        f"{onnx_with_transform_model.path}.onnx",
+        opset_version=opset_version,
+        input_names=["input"],
+        output_names=["output"],
+        dynamic_axes={
+            "input": {0: "batch_size", 2: "height", 3: "width"},  # Dynamic batch size, height, and width
+            "output": {0: "batch_size"},  # Dynamic batch size for output
+        },
+    )
     onnx_with_transform_model.framework = f"{setup_info}, onnx-{onnx.__version__}, {opset_version=}"
 
     train_metrics.log_metric("timeTakenSeconds", round(time.time() - start_time, 2))
